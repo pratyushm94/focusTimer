@@ -6,7 +6,7 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 
 const authRoutes = require("./routes/authRouter");
-//const statsRoutes = require("./routes/stats");
+const statsRoutes = require("./routes/statsRouter");
 const sessionRoutes = require("./routes/sessionRouter");
 
 const app = express();
@@ -19,14 +19,17 @@ const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100 // limit each IP to 100 requests per windowMs
 });
-
-app.use('/api/auth', authLimiter, authRoutes);
-//app.use("/api/stats", statsRoutes);
-//app.use("/api/session", sessionRoutes);
-
-app.get('/health', (req, res) => {
+app.get('/api/health', (req, res) => {
     res.json({status: 'ok'});
 });
+// app.get('/api', (req, res) => {
+//     res.json({status: 'ok', message: 'Server is running'});
+// });
+app.use('/api/auth', authLimiter, authRoutes);
+app.use("/api/stats", statsRoutes);
+app.use("/api/session", sessionRoutes);
+
+
 
 app.use((err, req, res, next) => {
     res.status(err.status || 500).json({
