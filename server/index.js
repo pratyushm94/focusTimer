@@ -32,6 +32,7 @@ app.use("/api/session", sessionRoutes);
 
 
 app.use((err, req, res, next) => {
+    console.log(err);
     res.status(err.status || 500).json({
         message: err.message || 'Something went wrong',
         stack: err.stack
@@ -39,7 +40,8 @@ app.use((err, req, res, next) => {
 })
 
 const uri = process.env.MONGODB_URI; 
-mongoose.connect(uri).then(() => {
+mongoose.connect(uri).then((data) => {
+    //console.log(data)
     app.listen(process.env.PORT || 5000, () => {
         console.log("Server is running on port 5000");
     });

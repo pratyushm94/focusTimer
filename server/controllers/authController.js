@@ -8,7 +8,8 @@ const signToken = (id) => {
 }
 
 exports.register = async (req, res, next) => { 
-try {
+    try {
+    console.log(req.body);
     const { name, email, password } = req.body;
     if(!name || !email || !password) {
         return res.status(400).json({ message: 'Please provide all fields' });
@@ -16,12 +17,14 @@ try {
     if(await User.findOne({ email: email.toLowerCase() })) {
         return res.status(400).json({ message: 'User already exists' });
     }
-    const user = await User.create({ name, email, password });
-    const token = signToken(user._id);
-    res.status(201).json({ user:{ name: user.name, email: user.email,id: user._id,}, token });
-} catch (error) {
+        const user = await User.create({ name, email, password });
+        console.log(user);
+        const token = signToken(user._id);
+        console.log(token);
+        res.status(201).json({ user:{ name: user.name, email: user.email,id: user._id,}, token });
+    } catch (error) {
     next(error);
-}
+    }
 }
 
 exports.login = async (req, res, next) => {

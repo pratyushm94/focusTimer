@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-    username: {
+    name: {
         type: String,
         required: true,
         unique: true,
@@ -25,8 +25,8 @@ const userSchema = new mongoose.Schema({
 // auto hash before save , only when password changes hence isModified-mongoose method from model
 userSchema.pre('save', async function (next) {
     if(!this.isModified('password')) return next();
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
+    this.password = await bcrypt.hash(this.password, 12);
+    //next();
 });
 
 userSchema.methods.comparePassword = function (password) {
