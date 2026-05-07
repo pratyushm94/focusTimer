@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import api from "../api"
 
-const DURATION = 30 * 60; // 30 minnutes
+const DURATION = 1 * 60; // 10 minnutes
 
 export function useTimer({onSessionSaved = {}}) {
     const [secondsLeft, setSecondsLeft] = useState(DURATION);// to display time left for a complete session
@@ -16,7 +16,7 @@ export function useTimer({onSessionSaved = {}}) {
             setSecondsLeft((prev) => {
                 if (prev <= 1) { //countdown reached end
                     clearInterval(intervalRef.current); //
-                    setRunning(fasle);
+                    setRunning(false);
                     setPhase('done');
                     saveSession(true);
                     return 0;
@@ -31,9 +31,11 @@ export function useTimer({onSessionSaved = {}}) {
     if (!startTimeRef.current) return;
     const endTime = new Date();
     const durationSeconds = Math.round((endTime - startTimeRef.current) / 1000);
+    const savedStart = startTimeRef.current; // capture before clearing
+    startTimeRef.current = null; // clear immediately to prevent double saves
     try {
       await api.post('/sessions', {
-        startTime: startTimeRef.current.toISOString(),
+        startTime: savedStart.toISOString(),
         endTime: endTime.toISOString(),
         durationSeconds,
         completed,
@@ -41,6 +43,7 @@ export function useTimer({onSessionSaved = {}}) {
       onSessionSaved?.(); // optional chaining, safely call in case it might not exist
     } catch (err) {
       console.error('Failed to save session:', err);
+      startTimeRef.current = savedStart; // restore on error
     }
     }, [onSessionSaved]);
     const start = useCallback(() => {

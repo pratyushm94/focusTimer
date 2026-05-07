@@ -21,7 +21,7 @@ exports.register = async (req, res, next) => {
         console.log(user);
         const token = signToken(user._id);
         console.log(token);
-        res.status(201).json({ user:{ name: user.name, email: user.email,id: user._id,}, token });
+        res.status(201).json({ user:{ name: user.name, email: user.email, id: user._id }, token });
     } catch (error) {
     next(error);
     }
@@ -37,7 +37,7 @@ if(!user || !(await user.comparePassword(password))) {
     return res.status(401).json({ message: 'Incorrect email or password' });
 }
 const token = signToken(user._id);
-res.status(200).json({ user:{ name: user.name, email: user.email,id: user._id,}, token });
+res.status(200).json({ user:{ name: user.name, email: user.email, id: user._id }, token });
 }
 
 exports.getMe = async (req, res) => {

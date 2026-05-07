@@ -27,7 +27,7 @@ app.get('/api/health', (req, res) => {
 // });
 app.use('/api/auth', authLimiter, authRoutes);
 app.use("/api/stats", statsRoutes);
-app.use("/api/session", sessionRoutes);
+app.use("/api/sessions", sessionRoutes);
 
 
 

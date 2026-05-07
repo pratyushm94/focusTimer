@@ -9,31 +9,47 @@ export function AuthProvider({ children }) {
 
   // On mount: verify stored token
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setLoading(false);
-      return;
-    }
+    const verifyToken = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setLoading(false);
+        return;
+      }
 
-    api
-      .get("/auth/me")
-      .then((res) => setUser(res.data.user))
-      .catch(() => localStorage.removeItem("token"))
-      .finally(() => setLoading(false));
+      try {
+        const res = await api.get("/auth/me");
+        setUser(res.data.user);
+      } catch (err) {
+        console.error("Token verification failed:", err);
+        localStorage.removeItem("token");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    verifyToken();
   }, []);
 
   const login = async (email, password) => {
-    const res = await api.post("/auth/login", { email, password });
-    localStorage.setItem("token", res.data.token);
-    setUser(res.data.user);
-    return res.data.user;
+    try {
+      const res = await api.post("/auth/login", { email, password });
+      localStorage.setItem("token", res.data.token);
+      setUser(res.data.user);
+      return res.data.user;
+    } catch (error) {
+      throw error;
+    }
   };
 
   const register = async (name, email, password) => {
-    const res = await api.post("/auth/register", { name, email, password });
-    localStorage.setItem("token", res.data.token);
-    setUser(res.data.user);
-    return res.data.user;
+    try {
+      const res = await api.post("/auth/register", { name, email, password });
+      localStorage.setItem("token", res.data.token);
+      setUser(res.data.user);
+      return res.data.user;
+    } catch (error) {
+      throw error;
+    }
   };
 
   const logout = () => {

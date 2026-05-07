@@ -15,7 +15,7 @@ exports.getStats = async function (req, res, next) {
         const dailyAgg = await Session.aggregate([
             {
                 $match: {
-                    userid,
+                    userId: userid,
                     startTime: { $gte: since }
                 },
             },
@@ -70,7 +70,7 @@ exports.getStats = async function (req, res, next) {
 
     // All-time totals
     const allTime = await Session.aggregate([
-      { $match: { userid } },
+      { $match: { userId: userid } },
       {
         $group: {
           _id: null,

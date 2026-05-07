@@ -86,7 +86,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Growth chart */}
-        <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800/60">
+        <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800/60 overflow-hidden min-w-0">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-gray-300">
               Focus over time
